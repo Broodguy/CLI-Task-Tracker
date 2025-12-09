@@ -21,7 +21,6 @@ public class Main {
             }
             String command = parts.get(0);
             String target = parts.get(1);
-            String arg = parts.get(2);
 
 
             switch (command) {
