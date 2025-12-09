@@ -29,7 +29,7 @@ public class Main {
                     break;
 
                 case "update":
-                    Tasks.updateDescription(Integer.parseInt(target), arg);
+                    Tasks.updateDescription(Integer.parseInt(target), parts.get(2));
                     break;
 
                 case "delete":
@@ -41,7 +41,7 @@ public class Main {
                     break;
 
                 case "mark":
-                    Tasks.updateStatus(Integer.parseInt(target), arg);
+                    Tasks.updateStatus(Integer.parseInt(target), parts.get(2));
                     break;
 
                 case "exit":
