@@ -92,13 +92,13 @@ public class Tasks {
         System.out.println();
         for (Task task : tasks){
             if (status.equals("all")){
-                System.out.println(task.getId() + " " + task.getDescription());
+                System.out.println(task.getId() + " | " + task.getDescription());
                 System.out.println("\t" + task.getStatus());
                 System.out.println("\tCREATED: " + task.getCreatedAt());
                 System.out.println("\tUPDATED: " + task.getUpdatedAt());
                 System.out.println();
             }else if (task.getStatus().equals(status)){
-                System.out.println(task.getId() + " " + task.getDescription());
+                System.out.println(task.getId() + " | " + task.getDescription());
                 System.out.println("\t" + task.getStatus());
                 System.out.println("\tCREATED: " + task.getCreatedAt());
                 System.out.println("\tUPDATED: " + task.getUpdatedAt());
