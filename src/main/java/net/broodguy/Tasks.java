@@ -91,7 +91,7 @@ public class Tasks {
 
         System.out.println();
         for (Task task : tasks){
-            if (status == null){
+            if (status.equals("all")){
                 System.out.println(task.getId() + " " + task.getDescription());
                 System.out.println("\t" + task.getStatus());
                 System.out.println("\tCREATED: " + task.getCreatedAt());
