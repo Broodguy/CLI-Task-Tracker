@@ -16,29 +16,33 @@ public class Main {
             input = sc.nextLine();
             List<String> parts = new ArrayList<>();
             Matcher m = Pattern.compile("(\"[^\"]+\"|\\S+)").matcher(input);
-
             while (m.find()) {
-                parts.add(m.group());
+                parts.add(m.group().replace("\"", ""));
             }
-            switch (parts.get(0)) {
+            String command = parts.get(0);
+            String target = parts.get(1);
+            String arg = parts.get(2);
+
+
+            switch (command) {
                 case "add":
-                    Tasks.add(parts.get(1));
+                    Tasks.add(target);
                     break;
 
                 case "update":
-                    Tasks.updateDescription(Integer.parseInt(parts.get(1)), parts.get(2));
+                    Tasks.updateDescription(Integer.parseInt(target), arg);
                     break;
 
                 case "delete":
-                    Tasks.delete(Integer.parseInt(parts.get(1)));
+                    Tasks.delete(Integer.parseInt(target));
                     break;
 
                 case "list":
-                    Tasks.list(parts.get(1));
+                    Tasks.list(target);
                     break;
 
                 case "mark":
-                    Tasks.updateStatus(Integer.parseInt(parts.get(1)), parts.get(2));
+                    Tasks.updateStatus(Integer.parseInt(target), arg);
                     break;
 
                 case "exit":
