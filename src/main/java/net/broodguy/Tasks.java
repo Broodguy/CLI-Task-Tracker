@@ -12,6 +12,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
+
 public class Tasks {
     private static final String FILE = "tasks.json";
     static Gson gson = new GsonBuilder().setPrettyPrinting().create();
@@ -19,15 +20,19 @@ public class Tasks {
 
     //Commands
     public static void add(String description) {
+        String lowestIDCache = getLowestUnusedID();
+
         List<Task> tasks = loadTasks();
         Task newTask = new Task(
-                getID(),
+                getLowestUnusedID(),
                 description,
                 "todo",
                 now(),
                 now());
         tasks.add(newTask);
+        tasks.sort(Comparator.comparingInt(t -> Integer.parseInt(t.getId())));
         saveTasks(tasks);
+        System.out.println("Task \"" + description + "\" added with ID of " + lowestIDCache);
     }
 
     public static void delete(int id) {
@@ -36,47 +41,71 @@ public class Tasks {
         for (int i = 0; i < tasks.size(); i++) {
             Task task = tasks.get(i);
 
-            if (task.getId().equals(id)) {
+            if (task.getId().equals(String.valueOf(id))) {
+                String idCache = task.getId();
                 tasks.remove(i);
                 saveTasks(tasks);
+                System.out.println("Task ID " + idCache + " deleted");
                 return;
             }
         }
+        System.out.println("Task with ID " + id + " not found");
     }
 
     public static void updateDescription(int id, String newDescription) {
         List<Task> tasks = loadTasks();
 
         for (Task task : tasks) {
-            if (task.getId().equals(id)) {
+            if (task.getId().equals(String.valueOf(id))) {
+                String descCache = task.getDescription();
                 task.setDescription(newDescription);
                 task.setUpdatedAt(LocalDateTime.now().toString());
                 saveTasks(tasks);
-                System.out.println("Description updated.");
+                System.out.println("Task ID " + id + " description updated from \"" + descCache + "\" to \"" + newDescription + "\"");
                 return;
             }
         }
 
-        System.out.println("Task not found.");
+        System.out.println("Task with ID " + id + " not found");
     }
 
     public static void updateStatus(int id, String newStatus){
         List<Task> tasks = loadTasks();
 
         for (Task task : tasks) {
-            if (task.getId().equals(id)) {
+            if (task.getId().equals(String.valueOf(id))) {
+                String statusCache = task.getStatus();
                 task.setStatus(newStatus);
                 task.setUpdatedAt(LocalDateTime.now().toString());
                 saveTasks(tasks);
-                System.out.println("Status updated.");
+                System.out.println("Task ID " + id + " description updated from \"" + statusCache + "\" to \"" + newStatus + "\"");
                 return;
             }
         }
 
-        System.out.println("Task not found.");
+        System.out.println("Task with ID " + id + " not found");
     }
 
-    public static void list() {
+    public static void list(String status) {
+        List<Task> tasks = loadTasks();
+
+        System.out.println();
+        for (Task task : tasks){
+            if (status == null){
+                System.out.println(task.getId() + " " + task.getDescription());
+                System.out.println("\t" + task.getStatus());
+                System.out.println("\tCREATED: " + task.getCreatedAt());
+                System.out.println("\nUPDATED: " + task.getUpdatedAt());
+                System.out.println();
+            }else if (task.getStatus().equals(status)){
+                System.out.println(task.getId() + " " + task.getDescription());
+                System.out.println("\t" + task.getStatus());
+                System.out.println("\tCREATED: " + task.getCreatedAt());
+                System.out.println("\nUPDATED: " + task.getUpdatedAt());
+                System.out.println();
+            }
+
+        }
     }
 
     //GSON Utils
@@ -103,14 +132,20 @@ public class Tasks {
     //Base Utils
     private static String now() {
         LocalDateTime now = LocalDateTime.now();
-        String formatted = now.format(DateTimeFormatter.ofPattern("HH:mm yyyy-MM-dd"));
-        return formatted;
+        return now.format(DateTimeFormatter.ofPattern("HH:mm yyyy-MM-dd"));
     }
 
-    private static String getID() {
+    private static String getLowestUnusedID() {
+        List<Task> tasks = loadTasks();
+        int id = 1;
 
-        return "0";
-
+        for (Task task : tasks) {
+            if (!task.getId().equals(String.valueOf(id))) {
+                return String.valueOf(id);
+            }
+            id++;
+        }
+        return String.valueOf(id++);
     }
 }
 
@@ -133,28 +168,36 @@ class Task {
         return id;
     }
 
+    public void setId(String id) {
+        this.id = id;
+    }
+
     public String getDescription() {
         return description;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public String getCreatedAt() {
-        return createdAt;
-    }
-
-    public String getUpdatedAt() {
-        return updatedAt;
     }
 
     public void setDescription(String description) {
         this.description = description;
     }
 
+    public String getStatus() {
+        return status;
+    }
+
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public String getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(String createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public String getUpdatedAt() {
+        return updatedAt;
     }
 
     public void setUpdatedAt(String updatedAt) {
